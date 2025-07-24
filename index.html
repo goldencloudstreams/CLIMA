@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Weather Overlay</title>
+  <style>
+    body {
+      margin: 0;
+      background: transparent;
+      font-family: Arial, sans-serif;
+      color: white;
+      text-align: center;
+    }
+    .weather {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      animation: fadeIn 2s ease-in-out;
+    }
+    .temp {
+      font-size: 48px;
+      font-weight: bold;
+      animation: pulse 2s infinite;
+    }
+    .desc {
+      font-size: 24px;
+      text-transform: capitalize;
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .icon {
+      width: 80px;
+      height: 80px;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="weather">
+    <img id="icon" class="icon" src="" alt="">
+    <div class="temp" id="temp">--°C</div>
+    <div class="desc" id="desc">Loading...</div>
+  </div>
+
+  <script>
+    const API_KEY = 'TU_API_KEY_AQUI';
+    const CITY = 'Buenos Aires';
+    const UNITS = 'metric';
+
+    fetch(`https://api.openweathermap.org/data/2.5/weather?q=${CITY}&appid=${API_KEY}&units=${UNITS}`)
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById('temp').innerText = Math.round(data.main.temp) + '°C';
+        document.getElementById('desc').innerText = data.weather[0].description;
+        const iconCode = data.weather[0].icon;
+        document.getElementById('icon').src = `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
+      })
+      .catch(err => {
+        document.getElementById('desc').innerText = 'Error loading weather';
+        console.error(err);
+      });
+  </script>
+</body>
+</html>
